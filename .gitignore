@@ -8,7 +8,4 @@ __pycache__/
 .venv/
 venv/
 env/
-data/tasks.json
-data/events.jsonl
-data/reports/
 *.log

@@ -1,126 +1,78 @@
 # Agent-Team
 
-一个面向 Codex / Claude Code 的“三省六部制”多 agent 协作系统。
+一个面向 Codex / Claude Code 的 **三省六部制 skill-first 多 agent 协作系统**。
 
-本项目基于 [cft0808/edict](https://github.com/cft0808/edict) 的制度化多 agent 思路重新收束为轻量仓库：不依赖 Web 服务或数据库，先提供可审计的任务状态机、角色章程、Claude Code subagents、Codex 工作法和 Python CLI。目标是让复杂任务可以被拆解、审议、派发、并行执行，并最终综合输出结果。
+本仓库不再以外部状态 CLI 为核心。核心入口是 [`skills/sansheng-liubu/SKILL.md`](skills/sansheng-liubu/SKILL.md)：在 Codex 中调用 `$sansheng-liubu`，或在 Claude Code 中调用 `/sansheng`，即可按太子分拣、中书拟案、门下审议、尚书派发、六部执行、刑部复核、最终回奏的制度完成复杂任务。
 
-## 核心结构
+## Quick Start
 
-```text
-皇上/用户
-  -> 太子       分拣输入，创建任务
-  -> 中书省     起草方案，拆解任务
-  -> 门下省     强制审议，准奏或封驳
-  -> 尚书省     派发六部，汇总结果
-  -> 六部       并行执行
-  -> 尚书省     综合回奏
-```
-
-六部职责：
-
-- **兵部**：工程实现、架构、代码、自动化脚本。
-- **刑部**：测试、审查、质量、合规、安全边界。
-- **礼部**：README、文档、输出格式、体验表达。
-- **户部**：数据、统计、成本、资源和指标。
-- **工部**：环境、部署、CI/CD、监控、性能和回滚。
-- **吏部**：agent 管理、prompt、角色边界、培训和评估。
-
-## 快速开始
-
-```bash
-python scripts/sansheng.py init
-python scripts/sansheng.py doctor
-python scripts/sansheng.py agents
-```
-
-创建一个正式任务：
-
-```bash
-python scripts/sansheng.py create "搭建三省六部协作骨架" --request "为 Codex 和 Claude Code 建立多 agent 分工系统"
-```
-
-记录中书省方案：
-
-```bash
-python scripts/sansheng.py plan JJC-YYYYMMDD-001 "建立角色、状态机、CLI 和文档" \
-  --step "定义三省六部角色边界" \
-  --step "实现任务状态机和审计日志" \
-  --step "配置 Claude Code subagents 和 Codex 指令" \
-  --acceptance "doctor 检查通过" \
-  --acceptance "README 能指导新用户完成一轮任务" \
-  --dispatch "兵部: 实现 CLI" \
-  --dispatch "刑部: 验证状态机和测试"
-```
-
-提交门下省审议并准奏：
-
-```bash
-python scripts/sansheng.py state JJC-YYYYMMDD-001 Menxia "方案提交门下省审议" --actor zhongshu
-python scripts/sansheng.py review JJC-YYYYMMDD-001 approve "四项审议通过" --actor menxia
-python scripts/sansheng.py state JJC-YYYYMMDD-001 Assigned "门下准奏，转尚书省派发" --actor zhongshu
-```
-
-派发六部、记录产出、生成回奏：
-
-```bash
-python scripts/sansheng.py dispatch JJC-YYYYMMDD-001 bingbu "实现核心 CLI" --detail "任务创建、流转、派发、报告"
-python scripts/sansheng.py state JJC-YYYYMMDD-001 Doing "六部开始执行" --actor shangshu
-python scripts/sansheng.py todo JJC-YYYYMMDD-001 B1 "核心 CLI 实现" completed --owner bingbu --detail "已完成 sansheng.py"
-python scripts/sansheng.py done JJC-YYYYMMDD-001 "系统骨架已完成" "完成三省六部协作骨架" --actor shangshu
-python scripts/sansheng.py report JJC-YYYYMMDD-001
-```
-
-## 给 Codex 使用
-
-Codex 会读取根目录的 [AGENTS.md](AGENTS.md)。在本仓库内处理正式任务时，按其中流程工作：
-
-- 有 subagent 能力时，按角色分派。
-- 没有 subagent 能力时，按“角色 pass”顺序执行，并记录每一步。
-- 所有正式任务使用 `scripts/sansheng.py` 留痕。
-
-## 给 Claude Code 使用
-
-Claude Code subagents 已放在 [.claude/agents](.claude/agents)：
-
-- `taizi`
-- `zhongshu`
-- `menxia`
-- `shangshu`
-- `bingbu`
-- `xingbu`
-- `libu`
-- `hubu`
-- `gongbu`
-- `libu_hr`
-
-在 Claude Code 中可以按任务阶段调用相应 subagent。完整说明见 [docs/codex-claude-code.md](docs/codex-claude-code.md)。
-
-## 仓库目录
+Codex:
 
 ```text
-AGENTS.md                 Codex 根级工作法
-.claude/agents/           Claude Code subagent 定义
-.codex/prompts/           Codex 可复制 prompt
-agents/                   角色章程
-config/                   状态机和角色配置
-scripts/sansheng.py       任务账本 CLI
-docs/                     架构、手册、输出契约
-schemas/task.schema.json  任务数据结构
-tests/                    CLI 回归测试
-examples/                 示例任务
+Use $sansheng-liubu to decompose this goal, dispatch the ministries, self-review twice at most, and return the final memorial.
 ```
 
-## 验证
+Claude Code:
 
-```bash
-python scripts/sansheng.py doctor
-python -m unittest discover -s tests
+```text
+/sansheng 为这个仓库建立发布检查清单，并自审查两轮封顶
 ```
 
-## 设计取舍
+安装到本机 skill 目录：
 
-- 保留 `edict` 的制度化分权：规划、审议、派发、执行、回奏互相分离。
-- 不引入数据库、Web UI 或长期运行服务，降低在 Codex/Claude Code 中使用的门槛。
-- 将看板变成 JSON/JSONL 任务账本，方便后续接入 Web UI、GitHub Issues、Notion 或 CI。
-- 所有 agent prompt 都是普通 Markdown，便于版本化审查。
+```powershell
+.\scripts\sync-sansheng-skill.ps1 -DryRun
+.\scripts\sync-sansheng-skill.ps1
+```
 
+详细说明见 [docs/skill-install-sync.md](docs/skill-install-sync.md)。
+
+## What It Does
+
+`sansheng-liubu` skill 将复杂任务变成一套可执行的 agent 协作制度：
+
+1. **太子**：分拣请求，提炼标题、目标、约束和交付物。
+2. **中书省**：拟定方案、拆解任务、定义验收标准。
+3. **门下省**：按可行性、完整性、风险、资源四项强制审议，可准奏或封驳。
+4. **尚书省**：只在准奏后派发六部，并综合结果。
+5. **六部**：兵部实现、刑部验收、礼部文档、户部数据、工部部署、吏部 agent/流程。
+6. **自迭代**：门下或刑部发现问题时最多修正两轮；第二轮仍不通过则停止并回奏风险。
+
+有真实 subagent / multi-agent 工具时，skill 要求按职责派发；没有工具时，用明确标注的角色 pass 模拟同一制度。
+
+## Repository Layout
+
+```text
+skills/sansheng-liubu/       Canonical Codex/Claude skill package
+  SKILL.md                   Trigger metadata and core workflow
+  agents/openai.yaml         Codex UI metadata
+  references/                Workflow, role map, iteration, output contracts
+
+.claude/skills/sansheng-liubu/  Claude project skill adapter
+.claude/commands/sansheng.md    Claude slash command alias
+.claude/agents/                 Claude role adapters
+docs/                           Architecture and install/sync docs
+scripts/sync-sansheng-skill.ps1 Idempotent local sync helper
+tests/skill-static-check.ps1    Static acceptance checks
+```
+
+## Validation
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tests\skill-static-check.ps1
+python C:\Users\Lenovo\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\sansheng-liubu
+```
+
+The static check verifies that:
+
+- the canonical skill exists;
+- `openai.yaml` points to `$sansheng-liubu`;
+- Claude `/sansheng` exists and stays thin;
+- Claude agents no longer reference the old state CLI;
+- main docs no longer recommend the old CLI flow.
+
+## Design Notes
+
+- Inspired by [cft0808/edict](https://github.com/cft0808/edict), but implemented as a portable skill rather than a service or task database.
+- The skill is the single source of truth. Claude commands and agents are adapters, not separate workflows.
+- Python ledger code from the previous implementation was removed from the main path because it conflicted with the desired Codex/Claude native invocation model.

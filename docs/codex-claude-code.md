@@ -2,41 +2,31 @@
 
 ## Codex
 
-Codex reads [AGENTS.md](../AGENTS.md) as the root operating guide for this repository.
+Install or copy the skill into `~/.codex/skills/sansheng-liubu`, then invoke:
 
-Recommended pattern:
+```text
+Use $sansheng-liubu to handle this task with 三省六部, dispatch relevant ministries, self-review twice at most, and return the final memorial.
+```
 
-1. Create a task with `scripts/sansheng.py create`.
-2. Draft a Zhongshu plan before editing files.
-3. Let Menxia review the plan. If the plan has gaps, fix the plan first.
-4. Dispatch execution work to the appropriate ministry roles.
-5. Record every meaningful result with `todo`, `progress`, and `flow`.
-6. Produce the final answer from `report`.
-
-When Codex has no real subagent facility in the current runtime, simulate agents as sequential role passes. The important invariant is that planning, review, execution, and synthesis remain separate.
+Codex should read `skills/sansheng-liubu/SKILL.md` and then load referenced files only when needed.
 
 ## Claude Code
 
-Claude Code subagents are stored in [.claude/agents](../.claude/agents).
+Claude Code has three adapters:
 
-Typical usage:
+- Project skill: `.claude/skills/sansheng-liubu/SKILL.md`
+- Slash command: `.claude/commands/sansheng.md`
+- Role adapters: `.claude/agents/*.md`
 
-- Ask `zhongshu` to draft the plan.
-- Ask `menxia` to review it.
-- Ask `shangshu` to route work.
-- Use `bingbu`, `xingbu`, `libu`, `hubu`, `gongbu`, and `libu_hr` for concrete work.
+Use:
 
-Each subagent prompt intentionally stays short. The canonical responsibilities live in [agents](../agents), and the workflow contract lives in [AGENTS.md](../AGENTS.md).
-
-## Shared CLI
-
-Both Codex and Claude Code should use the same CLI:
-
-```bash
-python scripts/sansheng.py doctor
-python scripts/sansheng.py next <task-id>
-python scripts/sansheng.py report <task-id>
+```text
+/sansheng <your task>
 ```
 
-This keeps task history independent from the model host.
+The slash command is intentionally thin. It invokes the skill and does not duplicate the workflow.
+
+## Subagent Behavior
+
+When real subagents are available, use them for concrete non-overlapping offices or ministries. When unavailable, run explicit labeled role passes. In both cases, Menxia approval is required before Shangshu dispatch.
 

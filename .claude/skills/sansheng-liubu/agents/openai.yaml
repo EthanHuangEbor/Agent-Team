@@ -1,0 +1,4 @@
+interface:
+  display_name: "三省六部"
+  short_description: "Codex/Claude 多 agent 分工审议"
+  default_prompt: "Use $sansheng-liubu to decompose this goal, dispatch the ministries, self-review twice at most, and return the final memorial."
