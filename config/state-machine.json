@@ -1,0 +1,27 @@
+{
+  "initial": "Zhongshu",
+  "terminal": ["Done", "Cancelled"],
+  "states": [
+    "Zhongshu",
+    "Menxia",
+    "Assigned",
+    "Doing",
+    "Review",
+    "Done",
+    "Blocked",
+    "Paused",
+    "Cancelled"
+  ],
+  "transitions": {
+    "Zhongshu": ["Menxia", "Blocked", "Cancelled"],
+    "Menxia": ["Zhongshu", "Assigned", "Blocked", "Cancelled"],
+    "Assigned": ["Doing", "Paused", "Blocked", "Cancelled"],
+    "Doing": ["Review", "Done", "Paused", "Blocked", "Cancelled"],
+    "Review": ["Menxia", "Done", "Blocked", "Cancelled"],
+    "Blocked": ["Zhongshu", "Assigned", "Doing", "Cancelled"],
+    "Paused": ["Assigned", "Doing", "Cancelled"],
+    "Done": [],
+    "Cancelled": []
+  }
+}
+

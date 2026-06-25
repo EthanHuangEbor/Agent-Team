@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/EthanHuangEbor/Agent-Team/schemas/task.schema.json",
+  "title": "Sansheng Liubu Task",
+  "type": "object",
+  "required": ["id", "title", "state", "created_at", "updated_at", "flow"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^JJC-[0-9]{8}-[0-9]{3}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "type": "string",
+      "enum": ["Zhongshu", "Menxia", "Assigned", "Doing", "Review", "Done", "Blocked", "Paused", "Cancelled"]
+    },
+    "source": {
+      "type": "string"
+    },
+    "original_request": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "plan": {
+      "type": ["object", "null"]
+    },
+    "review": {
+      "type": ["object", "null"]
+    },
+    "progress": {
+      "type": "array"
+    },
+    "todos": {
+      "type": "array"
+    },
+    "dispatches": {
+      "type": "array"
+    },
+    "outputs": {
+      "type": "array"
+    },
+    "flow": {
+      "type": "array"
+    }
+  }
+}
+

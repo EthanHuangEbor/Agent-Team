@@ -1,0 +1,81 @@
+{
+  "version": "0.1.0",
+  "name": "Codex 三省六部制 Agent Team",
+  "source_inspiration": "https://github.com/cft0808/edict",
+  "task_id_prefix": "JJC",
+  "agents": [
+    {
+      "id": "taizi",
+      "name": "太子",
+      "tier": "intake",
+      "mission": "分拣用户输入，区分闲聊与正式任务，将正式任务整理为可执行旨意。",
+      "may_call": ["zhongshu"]
+    },
+    {
+      "id": "zhongshu",
+      "name": "中书省",
+      "tier": "province",
+      "mission": "起草任务方案，拆解子任务、定义验收标准和派发建议。",
+      "may_call": ["menxia", "shangshu"]
+    },
+    {
+      "id": "menxia",
+      "name": "门下省",
+      "tier": "province",
+      "mission": "审议方案，从可行性、完整性、风险和资源四项把关，可准奏或封驳。",
+      "may_call": ["zhongshu"]
+    },
+    {
+      "id": "shangshu",
+      "name": "尚书省",
+      "tier": "province",
+      "mission": "按准奏方案派发六部，收集执行结果并综合成最终回奏。",
+      "may_call": ["libu_hr", "hubu", "libu", "bingbu", "xingbu", "gongbu"]
+    },
+    {
+      "id": "libu_hr",
+      "name": "吏部",
+      "tier": "ministry",
+      "mission": "负责 agent 配置、角色能力、流程培训、协作规范与绩效评估。",
+      "routing_keywords": ["agent", "角色", "提示词", "prompt", "培训", "规范", "能力", "评估"]
+    },
+    {
+      "id": "hubu",
+      "name": "户部",
+      "tier": "ministry",
+      "mission": "负责数据、统计、成本、资源清点、表格与指标口径。",
+      "routing_keywords": ["数据", "统计", "成本", "token", "资源", "表格", "指标", "报表"]
+    },
+    {
+      "id": "libu",
+      "name": "礼部",
+      "tier": "ministry",
+      "mission": "负责文档、输出格式、用户沟通、README、发布说明与体验表达。",
+      "routing_keywords": ["文档", "README", "说明", "发布", "格式", "UX", "UI", "沟通"]
+    },
+    {
+      "id": "bingbu",
+      "name": "兵部",
+      "tier": "ministry",
+      "mission": "负责工程实现、架构、功能开发、重构和自动化脚本。",
+      "routing_keywords": ["实现", "代码", "架构", "开发", "重构", "脚本", "接口", "功能"]
+    },
+    {
+      "id": "xingbu",
+      "name": "刑部",
+      "tier": "ministry",
+      "mission": "负责测试、审查、质量、合规、安全边界和验收。",
+      "routing_keywords": ["测试", "审查", "质量", "合规", "安全", "验收", "bug", "风险"]
+    },
+    {
+      "id": "gongbu",
+      "name": "工部",
+      "tier": "ministry",
+      "mission": "负责环境、部署、CI/CD、运行监控、性能和运维。",
+      "routing_keywords": ["部署", "环境", "CI", "CD", "监控", "性能", "运维", "容器"]
+    }
+  ],
+  "required_review_dimensions": ["feasibility", "completeness", "risk", "resources"],
+  "default_dispatch_order": ["bingbu", "xingbu", "libu", "hubu", "gongbu", "libu_hr"]
+}
+
